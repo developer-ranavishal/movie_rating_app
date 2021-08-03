@@ -5,39 +5,40 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.imdb_app.constant.NETWORK_TAG
-import com.example.imdb_app.network.MovieApi
+import com.example.imdb_app.constant.TAGN
+import com.example.imdb_app.model.MovieRepository
 import com.example.imdb_app.network.Results
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(movieApi : MovieApi) : ViewModel() {
+class MovieViewModel @Inject constructor(movieRepository: MovieRepository) : ViewModel() {
 
-    private var mPopularMovie = MutableLiveData<List<Results>>()
-    val popularMovie : LiveData<List<Results>>
-    get() = mPopularMovie
+    private var _allPopularMovie = MutableLiveData<List<Results>>()
+    val allPopularMovie: LiveData<List<Results>>
+        get() = _allPopularMovie
 
     init {
-        getMovies(movieApi)
+        callingPopularMovies(movieRepository)
     }
 
-    private fun getMovies(movieApi: MovieApi) {
-          viewModelScope.launch {
-              val movieResponse=movieApi.getMovies()
-              val responseBody=movieResponse.body()
-              Log.d(NETWORK_TAG, "total page are  ${responseBody?.total_pages}")
-              try {
-                       if (responseBody!=null) {
-                           Log.d(NETWORK_TAG, "movie are ${responseBody.results} ")
-                           mPopularMovie.value = responseBody.results
-                       }
-              }catch (t : Throwable){
-                  Log.d(NETWORK_TAG, "error is ${t.localizedMessage}")
-              }
 
-          }
+    private fun callingPopularMovies(movieRepository: MovieRepository) {
+        viewModelScope.launch {
+            movieRepository.getPopularMovies()
+                .collect { allMovie ->
+                    try {
+                        Log.d(TAGN, "response is successfully done")
+                        _allPopularMovie.value = allMovie
+                    } catch (t: Throwable) {
+                        Log.d(TAGN, "error occur which is ${t.localizedMessage}")
+                    }
+
+                }
+        }
     }
+
 
 }
