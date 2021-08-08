@@ -30,7 +30,7 @@ class MovieViewModel @Inject constructor(movieRepository: MovieRepository) : Vie
             movieRepository.getPopularMovies()
                 .collect { allMovie ->
                     try {
-                        Log.d(TAGN, "response is successfully done")
+                        Log.d(TAGN, "response is successfully done ")
                         _allPopularMovie.value = allMovie
                     } catch (t: Throwable) {
                         Log.d(TAGN, "error occur which is ${t.localizedMessage}")

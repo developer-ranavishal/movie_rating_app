@@ -1,5 +1,10 @@
 package com.example.imdb_app.network
 
+import android.os.Parcelable
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Results(
     val id: Int,
     val original_language: String,
@@ -10,6 +15,6 @@ data class Results(
     val release_date: String,  //imp
     val title: String,
     val video: Boolean,
-    val vote_average: Double,
+    val vote_average: Double,  //imp
     val vote_count: Int
-)
+) : Parcelable

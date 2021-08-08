@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavHostController
+import androidx.navigation.fragment.findNavController
+import com.example.imdb_app.R
 import com.example.imdb_app.adapter.MovieAdapter
 import com.example.imdb_app.adapter.onMovieClickListener
 import com.example.imdb_app.databinding.FragmentHomeScreenBinding
@@ -23,7 +26,7 @@ class HomeScreen : Fragment(), onMovieClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding= FragmentHomeScreenBinding.inflate(layoutInflater)
         binding.viewModel=movieViewModel
         binding.lifecycleOwner=viewLifecycleOwner
@@ -33,6 +36,8 @@ class HomeScreen : Fragment(), onMovieClickListener {
 
     override fun onMovieClick(results: Results, position: Int) {
         Toast.makeText(context, "item number $position ", Toast.LENGTH_SHORT).show()
+        val action=HomeScreenDirections.actionHomeScreenToDetailScreen(results)
+        findNavController().navigate(action)
     }
 
 }
